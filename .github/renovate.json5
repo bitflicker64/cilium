@@ -123,7 +123,7 @@
     {
       // Dependency cooldown: skip versions published less than 5 days ago
       "matchUpdateTypes": ["major", "minor", "patch"],
-      "minimumReleaseAge": "5 days"
+      "minimumReleaseAge": "0 days"
     },
     {
       // Do not pin digests for self-referenced cilium/cilium GitHub Actions
