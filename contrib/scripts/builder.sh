@@ -70,6 +70,10 @@ set -u # End workaround for macOS and BASH 3.2.
 trap 'docker rm -f "$CONTAINER"' EXIT
 docker start "$CONTAINER"
 
+# builder.sh
+
+echo "DEBUG: UID=$(id -u) USER=$(whoami)" >&2
+
 if [ "$USERID" -eq 0 ] || [ "$GROUPID" -eq 0 ]; then
 	echo "WARNING: Running with root permissions is discouraged, not supported and insecure!" 1>&2
 	echo "Go cache dirs and ccache dir will be mounted at wrong locations. Don't run as root." 1>&2
