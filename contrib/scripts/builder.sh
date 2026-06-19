@@ -15,6 +15,24 @@ GO="$(which go 2> /dev/null || :)"
 
 USERID=$(id -u)
 GROUPID=$(id -g)
+
+# === DEBUG START ===
+echo "=== BUILDER.SH DEBUG ===" >&2
+echo "  USERID=$USERID GROUPID=$GROUPID" >&2
+echo "  whoami=$(whoami)" >&2
+echo "  PPID=$PPID" >&2
+# Show the parent process that called this script
+cat /proc/$PPID/status 2>/dev/null | grep -E "^(Name|Uid|Gid):" >&2 || true
+# Show the full command line of the parent process
+cat /proc/$PPID/cmdline 2>/dev/null | tr '\0' ' ' >&2 || true
+echo "" >&2
+# Show the process tree up to this script
+ps -o pid,ppid,user,comm -p $$ --ppid $PPID 2>/dev/null >&2 || ps aux >&2
+# Show key env vars that might reveal how we were invoked
+echo "  HOME=$HOME USER=${USER:-unset} LOGNAME=${LOGNAME:-unset}" >&2
+echo "=== BUILDER.SH DEBUG END ===" >&2
+# === DEBUG END ===
+
 USER_OPTION=(--user "$USERID:$GROUPID")
 USER_PATH="/home/ubuntu"
 CHOWN_FLAGS=("--no-dereference")
