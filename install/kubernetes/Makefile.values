@@ -31,13 +31,13 @@ endif
 
 # renovate: datasource=docker
 export CERTGEN_REPO?=quay.io/cilium/certgen
-export CERTGEN_VERSION?=v0.4.1
-export CERTGEN_DIGEST?=sha256:f0c656830e856d26b24b0e144df1f8b327d3b46748d76a630514111fc365b697
+export CERTGEN_VERSION?=v0.4.6
+export CERTGEN_DIGEST?=sha256:511cedee817713fdf72db7e32fffb4b90da7747661b95180064f18198877626c
 
 # renovate: datasource=docker
 export CILIUM_NODEINIT_REPO?=quay.io/cilium/startup-script
-export CILIUM_NODEINIT_VERSION?=1773335249-e45b074
-export CILIUM_NODEINIT_DIGEST?=sha256:bf1944bbdfd073bbb2b8d9c5baa315267a552aec6942102f930d2a7aa7ddc0e1
+export CILIUM_NODEINIT_VERSION?=1776710274-6141fa4
+export CILIUM_NODEINIT_DIGEST?=sha256:00a41a8ddcbcd78f7305bb943b14709c972e3ed25764423876686db1178c58c2
 
 # renovate: datasource=docker
 export CILIUM_ENVOY_REPO?=quay.io/cilium/cilium-envoy
@@ -46,28 +46,28 @@ export CILIUM_ENVOY_DIGEST?=sha256:533d4cb6c28ea9334051f036e130115b1f02d9c0fa656
 
 # renovate: datasource=docker
 export HUBBLE_UI_BACKEND_REPO?=quay.io/cilium/hubble-ui-backend
-export HUBBLE_UI_BACKEND_VERSION?=v0.13.3
-export HUBBLE_UI_BACKEND_DIGEST?=sha256:db1454e45dc39ca41fbf7cad31eec95d99e5b9949c39daaad0fa81ef29d56953
+export HUBBLE_UI_BACKEND_VERSION?=v0.13.5
+export HUBBLE_UI_BACKEND_DIGEST?=sha256:fac0c300ae119274edca11fd89b1ad23c788792d8bc4ea2ba631c709e8d3c688
 
 # renovate: datasource=docker
 export HUBBLE_UI_FRONTEND_REPO?=quay.io/cilium/hubble-ui
-export HUBBLE_UI_FRONTEND_VERSION?=v0.13.3
-export HUBBLE_UI_FRONTEND_DIGEST?=sha256:661d5de7050182d495c6497ff0b007a7a1e379648e60830dd68c4d78ae21761d
+export HUBBLE_UI_FRONTEND_VERSION?=v0.13.5
+export HUBBLE_UI_FRONTEND_DIGEST?=sha256:f7d514fc54d784ed6df9d58cf0e97648b143f92b766dd1780ed3fc845bd4c516
 
 # renovate: datasource=docker
 export SPIRE_INIT_REPO?=docker.io/library/busybox
-export SPIRE_INIT_VERSION?=1.37.0
-export SPIRE_INIT_DIGEST?=sha256:b3255e7dfbcd10cb367af0d409747d511aeb66dfac98cf30e97e87e4207dd76f
+export SPIRE_INIT_VERSION?=1.38.0
+export SPIRE_INIT_DIGEST?=sha256:fd8d9aa63ba2f0982b5304e1ee8d3b90a210bc1ffb5314d980eb6962f1a9715d
 
 # renovate: datasource=docker
 export SPIRE_SERVER_REPO?=ghcr.io/spiffe/spire-server
-export SPIRE_SERVER_VERSION?=1.14.4
-export SPIRE_SERVER_DIGEST?=sha256:27c7d356768b8641c569745e1121328affeb4aaabe0c974d33ff92dddecf30ef
+export SPIRE_SERVER_VERSION?=1.15.1
+export SPIRE_SERVER_DIGEST?=sha256:abfb368f538557646d5eb138ab0854361b79fa5ae36243ca5efe378dcbe85d61
 
 # renovate: datasource=docker
 export SPIRE_AGENT_REPO?=ghcr.io/spiffe/spire-agent
-export SPIRE_AGENT_VERSION?=1.14.4
-export SPIRE_AGENT_DIGEST?=sha256:f93996a9396ec4042a48042085c2abf1a0f8f0f3b339571e06ebfebbf94bb830
+export SPIRE_AGENT_VERSION?=1.15.1
+export SPIRE_AGENT_DIGEST?=sha256:501ea7072748adb74d1f9ac3320ddceedcf3b8c4a1cc9d2b4bedd427d277475b
 
 # renovate: datasource=docker
 export ZTUNNEL_REPO?=quay.io/cilium/ztunnel
