@@ -27,4 +27,4 @@ runuser -u ubuntu -- bash -c '
   exec renovate
 '
 
-runuser -u ubuntu renovate
+runuser -u ubuntu -g ubuntu renovate
