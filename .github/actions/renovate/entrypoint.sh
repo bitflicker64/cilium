@@ -22,9 +22,14 @@ fi
 usermod -aG "$GROUP_NAME" ubuntu
 
 echo "=== ENTRYPOINT: before runuser, uid=$(id -u) ===" >&2
-runuser -u ubuntu -- bash -c '
-  echo "=== INSIDE runuser: uid=$(id -u) user=$(whoami) HOME=$HOME ===" >&2
-  exec renovate
-'
 
+# DIRECT TEST: call builder.sh as root (how it would run if runuser fails)
+echo "=== DIRECT TEST as root ===" >&2
+bash /github/workspace/contrib/scripts/builder.sh go version 2>&1 || true
+
+# DIRECT TEST: call builder.sh as ubuntu (how it should run)
+echo "=== DIRECT TEST as ubuntu ===" >&2
+runuser -u ubuntu -- bash /github/workspace/contrib/scripts/builder.sh go version 2>&1 || true
+
+echo "=== INSIDE runuser: uid=$(runuser -u ubuntu -- id -u) ===" >&2
 runuser -u ubuntu renovate
