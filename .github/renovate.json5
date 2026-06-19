@@ -18,7 +18,7 @@
     "group:githubArtifactActions"
   ],
   // self-hosted configuration
-  "username": "cilium-renovate[bot]",
+  "username": "cilium-renovate-bot[bot]",
   "repositories": [
     "bitflicker64/cilium"
   ],
@@ -31,7 +31,7 @@
   // https://docs.renovatebot.com/self-hosted-configuration/#requireconfig
   "requireConfig": "ignored",
   // This ensures that the gitAuthor and gitSignOff fields match
-  "gitAuthor": "cilium-renovate[bot] <295100266+cilium-renovate[bot]@users.noreply.github.com>",
+  "gitAuthor": "cilium-renovate-bot[bot] <295100266+cilium-renovate-bot[bot]@users.noreply.github.com>",
   "includePaths": [
     ".github/actions/bpftrace/**",
     ".github/actions/cosign/**",
