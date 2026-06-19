@@ -169,15 +169,15 @@ var (
 		// renovate: datasource=docker
 		"ConnectivityCheckAlpineCurlImage": "quay.io/cilium/alpine-curl:v1.10.0@sha256:913e8c9f3d960dde03882defa0edd3a919d529c2eb167caa7f54194528bde364",
 		// renovate: datasource=docker
-		"ConnectivityCheckJSONMockImage": "quay.io/cilium/json-mock:v1.3.9@sha256:c98b26177a5a60020e5aa404896d55f0ab573d506f42acfb4aa4f5705a5c6f56",
+		"ConnectivityCheckJSONMockImage": "quay.io/cilium/json-mock:v1.4.0@sha256:500dc80291d4f402462e4bb7ecfc2b726f08c8136999e5e91cdd54f9e90eebeb",
 		// renovate: datasource=docker
-		"ConnectivityDNSTestServerImage": "registry.k8s.io/coredns/coredns:v1.14.2@sha256:e7e6440cfd1e919280958f5b5a6ab2b184d385bba774c12ad2a9e1e4183f90d9",
+		"ConnectivityDNSTestServerImage": "registry.k8s.io/coredns/coredns:v1.14.3@sha256:884b72dd6d2f7d367902af420605e0288dffedb0516ce29330423ae3f8f5c6fa",
 		// renovate: datasource=docker
 		"ConnectivityTestConnDisruptImage": "quay.io/cilium/test-connection-disruption:v0.0.17@sha256:62374cfd0e87e6541244331ccf477a21c527c3eefa9d841b97af79996939be0c",
 		// renovate: datasource=docker
-		"ConnectivityTestFRRImage": "quay.io/frrouting/frr:10.5.3@sha256:37b42d2b340c322edc5f20dc4598373adb6e813e95cc9d4a18f64f9a37c98a4c",
+		"ConnectivityTestFRRImage": "quay.io/frrouting/frr:10.6.1@sha256:813497af103e972600f6161012b3bf2a2a1c5ea10d09cd1eacd74f1dc510a57b",
 		// renovate: datasource=docker
-		"ConnectivityTestSocatImage": "docker.io/alpine/socat:1.8.0.3@sha256:bfd2550379212e087dc18db2f4611f43477be4b575d660c8f18c5b9a1b2e2757",
+		"ConnectivityTestSocatImage": "docker.io/alpine/socat:1.8.1.1@sha256:2b6b49e9000105672bf70648f8642801791374a24f549d30bed3c3115c13d24c",
 	}
 
 	ConnectivityCheckOptionalImagesTest = map[string]string{
@@ -187,7 +187,7 @@ var (
 
 	ConnectivityCheckImagesPerf = map[string]string{
 		// renovate: datasource=docker
-		"ConnectivityPerformanceImage": "quay.io/cilium/network-perf:3.20-1772622563-6fd6a90@sha256:3bb01019a14a17d07b29bbc39cdd57da7c4115f5d1a626164f4b1f296f6a9001",
+		"ConnectivityPerformanceImage": "quay.io/cilium/network-perf:3.21-1780393059-0db9b55@sha256:983440c6e47e93fc25a8f2d68789f1dbbbb97755d14634cdb35eed70d9a5720d",
 	}
 
 	// The following variables are set at compile time via LDFLAGS.
