@@ -21,4 +21,10 @@ fi
 
 usermod -aG "$GROUP_NAME" ubuntu
 
+echo "=== ENTRYPOINT: before runuser, uid=$(id -u) ===" >&2
+runuser -u ubuntu -- bash -c '
+  echo "=== INSIDE runuser: uid=$(id -u) user=$(whoami) HOME=$HOME ===" >&2
+  exec renovate
+'
+
 runuser -u ubuntu renovate

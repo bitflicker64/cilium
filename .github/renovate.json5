@@ -20,7 +20,7 @@
   // self-hosted configuration
   "username": "cilium-renovate[bot]",
   "repositories": [
-    "cilium/cilium"
+    "bitflicker64/cilium"
   ],
   "prConcurrentLimit": 0,
   "prHourlyLimit": 0,
