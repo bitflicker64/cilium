@@ -32,4 +32,4 @@ echo "=== DIRECT TEST as ubuntu ===" >&2
 runuser -u ubuntu -- bash /github-action/contrib/scripts/builder.sh go version 2>&1 || true
 
 echo "=== INSIDE runuser: uid=$(runuser -u ubuntu -- id -u) ===" >&2
-runuser -u ubuntu -g ubuntu renovate
+runuser -u ubuntu -g ubuntu -G "$GROUP_NAME" renovate
