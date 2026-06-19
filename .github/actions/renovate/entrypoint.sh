@@ -21,4 +21,4 @@ fi
 
 usermod -aG "$GROUP_NAME" ubuntu
 
-runuser -u ubuntu renovate
+runuser -u ubuntu -g ubuntu -G "$GROUP_NAME" renovate
