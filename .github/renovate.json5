@@ -64,7 +64,7 @@
     ".custom-gcl.yaml",
   ],
   "schedule": [
-    "on sunday"
+    "at any time"
   ],
   "postUpdateOptions": [
     "gomodTidy"
