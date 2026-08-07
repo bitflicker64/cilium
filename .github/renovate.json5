@@ -26,7 +26,7 @@
   ],
   // PROBE RUN 4 ONLY - keep fork side effects to a single branch/PR.
   "prConcurrentLimit": 1,
-  "prHourlyLimit": 1,
+  "prHourlyLimit": 0,
   "branchConcurrentLimit": 1,
   // renovate first reads this configuration, then reads the repository
   // configuration, since we don't split between the self-hosted and the
@@ -37,35 +37,8 @@
   // This ensures that the gitAuthor and gitSignOff fields match
   "gitAuthor": "cilium-renovate[bot] <134692979+cilium-renovate[bot]@users.noreply.github.com>",
   "includePaths": [
-    ".github/actions/bpftrace/**",
-    ".github/actions/cosign/**",
-    ".github/actions/e2e/**",
-    ".github/actions/kvstore/**",
-    ".github/actions/gather-metrics/**",
-    ".github/actions/merge-artifacts/**",
-    ".github/actions/post-logic/**",
-    ".github/actions/ginkgo/**",
-    ".github/actions/lvh-kind/**",
-    ".github/actions/set-env-variables/action.yml",
-    ".github/actions/ipsec/configs.yaml",
-    ".github/workflows/**",
-    ".github/ISSUE_TEMPLATE/bug_report.yaml",
-    "Documentation/requirements-min/requirements.txt",
-    "cilium-cli/**",
-    "pkg/azure/**",
-    "images/**",
-    "examples/hubble/*",
     "go.mod",
-    "go.sum",
-    "Makefile.defs",
-    "test/packet/scripts/install.sh",
-    "images/builder/install-protoc.sh",
-    "images/builder/install-protoplugins.sh",
-    "install/kubernetes/cilium/templates/spire/**",
-    "install/kubernetes/cilium/values.yaml.tmpl",
-    "install/kubernetes/Makefile.values",
-    "test/k8s/manifests/netpol-cyclonus",
-    ".custom-gcl.yaml",
+    "go.sum"
   ],
   // PROBE RUN 4 ONLY - upstream this is ["on sunday"]; today is not Sunday and
   // Renovate would otherwise decline to create any branch.
