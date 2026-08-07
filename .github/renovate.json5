@@ -19,11 +19,15 @@
   ],
   // self-hosted configuration
   "username": "cilium-renovate[bot]",
+  // PROBE RUN 4 ONLY - target the fork so Renovate can actually create a branch
+  // and fire postUpgradeTasks. Upstream this stays "cilium/cilium".
   "repositories": [
-    "cilium/cilium"
+    "bitflicker64/cilium"
   ],
-  "prConcurrentLimit": 0,
-  "prHourlyLimit": 0,
+  // PROBE RUN 4 ONLY - keep fork side effects to a single branch/PR.
+  "prConcurrentLimit": 1,
+  "prHourlyLimit": 1,
+  "branchConcurrentLimit": 1,
   // renovate first reads this configuration, then reads the repository
   // configuration, since we don't split between the self-hosted and the
   // repository configuration, this can lead to duplicate of some areas of the
@@ -50,7 +54,6 @@
     "cilium-cli/**",
     "pkg/azure/**",
     "images/**",
-    "examples/datapath-plugin/*",
     "examples/hubble/*",
     "go.mod",
     "go.sum",
@@ -64,8 +67,10 @@
     "test/k8s/manifests/netpol-cyclonus",
     ".custom-gcl.yaml",
   ],
+  // PROBE RUN 4 ONLY - upstream this is ["on sunday"]; today is not Sunday and
+  // Renovate would otherwise decline to create any branch.
   "schedule": [
-    "on sunday"
+    "at any time"
   ],
   "postUpdateOptions": [
     "gomodTidy"
@@ -92,12 +97,9 @@
   // we can upgrade them together in a single PR.
   "separateMinorPatch": false,
   "pruneStaleBranches": true,
+  // PROBE RUN 4 ONLY - main alone, to keep the run short.
   "baseBranchPatterns": [
-    "main",
-    "v1.20",
-    "v1.19",
-    "v1.18",
-    "v1.17"
+    "main"
   ],
   "vulnerabilityAlerts": {
     "enabled": true
@@ -118,7 +120,10 @@
     "^make GO='contrib/scripts/builder.sh go' generate-apis$",
     "^make GO='contrib/scripts/builder.sh go' generate-k8s-api$",
     "^go mod tidy$",
-    "^go mod vendor$"
+    "^go mod vendor$",
+    // PROBE RUN 4 ONLY
+    "^env$",
+    "^contrib/scripts/builder.sh true$"
   ],
   "assignAutomerge": true,
   "packageRules": [
@@ -128,31 +133,19 @@
       "minimumReleaseAge": "5 days"
     },
     {
-      // Docker Hub is the only Docker registry that currently supports release
-      // timestamps, causing updates to be never proposed by Renovate for all
-      // other registries. Hence, let's enable the "timestamp-optional" option,
-      // which unfortunately effectively disables the cooldown period for them.
-      // https://docs.renovatebot.com/key-concepts/minimum-release-age/#which-registries-support-release-timestamps
-      "matchDatasources": ["docker"],
-      "minimumReleaseAgeBehaviour": "timestamp-optional",
-    },
-    {
-      // Do not pin or update digests for self-referenced cilium/cilium GitHub
-      // Actions and reusable workflows (e.g.,
-      // cilium/cilium/.github/actions/set-commit-status@<sha> # main or
-      // cilium/cilium/.github/workflows/foo.yaml@<sha> # v1.17). These are
-      // internal references within the same repository.
+      // Do not pin digests for self-referenced cilium/cilium GitHub Actions
+      // and reusable workflows (e.g.,
+      // cilium/cilium/.github/actions/set-commit-status@main or
+      // cilium/cilium/.github/workflows/foo.yaml@v1.17). These are internal
+      // references within the same repository and should not be pinned to a
+      // commit SHA by Renovate.
       "matchManagers": [
         "github-actions"
       ],
       "matchPackageNames": [
         "cilium/cilium"
       ],
-      "matchUpdateTypes": [
-        "digest",
-        "pinDigest"
-      ],
-      "enabled": false
+      "pinDigests": false
     },
     {
       // Do not pin digests for the golangci/golangci-lint dependency that the
@@ -279,51 +272,16 @@
         "go.mod",
         "go.sum"
       ],
-      // Separate major upgrades from minor/patch. Renovate does not support
-      // major upgrades of vendored Go modules: the 'gomodUpdateImportPaths'
-      // 'mod upgrade' step runs before 'go mod vendor' re-syncs
-      // vendor/modules.txt and fails with "inconsistent vendoring", which
-      // aborts the whole grouped artifact update and blocks every minor/patch
-      // update sharing the branch. Separating majors keeps this group flowing.
-      // With this set, a dependency that has both a minor and a major available
-      // still gets its minor update here (and its major in the group below).
-      // See https://github.com/renovatebot/renovate/issues/21010
-      "separateMajorMinor": true,
       "postUpdateOptions": [
         // update source import paths on major updates
         "gomodUpdateImportPaths"
       ],
       "postUpgradeTasks": {
         "commands": [
-          "go mod tidy",
-          "go mod vendor"
-        ],
-        "executionMode": "update"
-      },
-      "matchBaseBranches": [
-        "main"
-      ]
-    },
-    {
-      // Go module major upgrades, isolated into their own PR. These are expected
-      // to fail the automated artifact update for vendored modules (see the
-      // comment on the group above) and require manual intervention by
-      // maintainers, so they must not share a branch with the minor/patch group.
-      "groupName": "all go dependencies main (major)",
-      "groupSlug": "all-go-deps-major-main",
-      "matchFileNames": [
-        "go.mod",
-        "go.sum"
-      ],
-      "matchUpdateTypes": [
-        "major"
-      ],
-      "postUpdateOptions": [
-        // update source import paths on major updates
-        "gomodUpdateImportPaths"
-      ],
-      "postUpgradeTasks": {
-        "commands": [
+          // PROBE RUN 4 ONLY - does customEnvVariables reach a real
+          // postUpgradeTask, and does builder.sh then succeed?
+          "env",
+          "contrib/scripts/builder.sh true",
           "go mod tidy",
           "go mod vendor"
         ],
@@ -442,6 +400,8 @@
         // dependency manually.
         "/github.com/onsi/ginkgo/",
         "/github.com/onsi/gomega/*/",
+        // We can't update it, see https://github.com/cilium/cilium/issues/44063 for more info
+        "github.com/cilium/ebpf",
         // The version upgrade from 9.0.4 to 9.1.0 breaks our CI
         "sphinx"
       ]
@@ -523,7 +483,6 @@
       ],
       "allowedVersions": "24.04",
       "matchBaseBranches": [
-        "v1.20",
         "v1.19",
         "v1.18",
         "v1.17",
@@ -537,7 +496,6 @@
       ],
       "allowedVersions": "<1.26",
       "matchBaseBranches": [
-        "v1.20",
         "v1.19",
         "v1.18",
         "v1.17"
@@ -549,7 +507,6 @@
       ],
       "allowedVersions": "<3.24",
       "matchBaseBranches": [
-        "v1.20",
         "v1.19"
       ]
     },
@@ -890,7 +847,6 @@
       // as we need to update cilium-envoy accordingly.
       "matchPackageNames": [
         "github.com/envoyproxy/go-control-plane/envoy",
-        "github.com/envoyproxy/go-control-plane",
       ],
       "matchUpdateTypes": [
         "patch",
@@ -927,7 +883,6 @@
       "versioning": "regex:v(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)-(?<build>\\d+).*$",
       "allowedVersions": "/^v1\\.36\\.([0-9]+)-([0-9]+)-.*$/",
       "matchBaseBranches": [
-        "v1.20",
         "v1.19",
         "v1.18",
         "v1.17"

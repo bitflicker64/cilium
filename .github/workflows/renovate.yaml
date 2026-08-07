@@ -17,9 +17,6 @@ jobs:
   renovate:
     name: Run self-hosted Renovate
     runs-on: ubuntu-24.04
-    environment:
-      name: renovate
-      deployment: false
     permissions:
       contents: read
     steps:
@@ -28,26 +25,26 @@ jobs:
       # grained permissions installed in the repository for that.
       - name: Get token
         id: get_token
-        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        uses: cilium/actions-app-token@61a6271ce92ba02f49bf81c755685d59fb25a59a # v0.21.1
         with:
-          app-id: ${{ secrets.CILIUM_RENOVATE_APP_ID }}
-          private-key: ${{ secrets.CILIUM_RENOVATE_PEM }}
+          APP_PEM: ${{ secrets.CILIUM_RENOVATE_PEM }}
+          APP_ID: ${{ secrets.CILIUM_RENOVATE_APP_ID }}
 
       # renovate clones the repository again in its container fs but it needs
       # the renovate configuration to start.
       - name: Checkout
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
       - name: Self-hosted Renovate
-        uses: renovatebot/github-action@3064367f740a1a91cca218698a63902689cce200 # v46.1.20
+        uses: renovatebot/github-action@693b9ef15eec82123529a37c782242f091365961 # v46.1.14
         env:
           # default to DEBUG log level, this is always useful
           LOG_LEVEL: ${{ github.event.inputs.renovate_log_level_debug == 'false' && 'INFO' || 'DEBUG' }}
         with:
           # renovate: datasource=github-releases depName=renovatebot/renovate
-          renovate-version: 43.275.0
+          renovate-version: 43.176.5
           docker-user: root
           docker-cmd-file: .github/actions/renovate/entrypoint.sh
           configurationFile: .github/renovate.json5
-          token: '${{ steps.get_token.outputs.token }}'
+          token: '${{ steps.get_token.outputs.app_token }}'
           mount-docker-socket: true
