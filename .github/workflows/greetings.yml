@@ -1,9 +1,5 @@
 name: Greetings
 
-# TEMPORARY demo harness for https://github.com/cilium/cilium/pull/48579
-# Runs the real greeter against a real issue to show which gate fires.
-# Revert this file once the demo run is captured.
-
 on:
   pull_request_target:
     types: [opened]
@@ -16,30 +12,12 @@ permissions:
   pull-requests: write
 
 jobs:
-  # Always runs. Shows what the event payload actually carries.
-  probe:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Show author_association in both payloads
-        run: |
-          echo "event_name:          ${{ github.event_name }}"
-          echo "pull_request.assoc: '${{ github.event.pull_request.author_association }}'"
-          echo "issue.assoc:        '${{ github.event.issue.author_association }}'"
-
-  # The gate currently on cilium/cilium main. Expected to be SKIPPED on an issue.
-  old-gate:
+  greet:
+    # Only enforce on drive-by / first-time contributors.
+    # Regulars (MEMBER, COLLABORATOR, OWNER, CONTRIBUTOR) are skipped entirely.
     if: >
       github.event.pull_request.author_association == 'FIRST_TIME_CONTRIBUTOR' ||
       github.event.pull_request.author_association == 'FIRST_TIMER' ||
       github.event.pull_request.author_association == 'NONE'
-    runs-on: ubuntu-latest
-    steps:
-      - run: echo "old gate passed, a greeting would be posted"
-
-  # The gate proposed in the PR. Expected to RUN and post the real greeting.
-  greet:
-    if: >
-      contains(fromJSON('["FIRST_TIME_CONTRIBUTOR", "FIRST_TIMER", "NONE"]'),
-      github.event.pull_request.author_association || github.event.issue.author_association)
     uses: cilium/cilium/.github/workflows/reusable-greetings.yml@main
     secrets: inherit
