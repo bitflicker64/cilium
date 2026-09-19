@@ -147,7 +147,10 @@ enum {
 #define EVENT_SOURCE 0
 #endif
 
+#include "events.h"
 #include "notify.h"
+#include "trace_helpers.h"
+#include "utils.h"
 
 #ifndef DBG_EXTENSION
 #define DBG_EXTENSION
@@ -176,14 +179,6 @@ struct debug_capture_msg {
 	DBG_CAPTURE_EXTENSION
 };
 
-#if defined(DEBUG) || defined(DEBUG_TAGGED)
-#include "events.h"
-#include "utils.h"
-
-#ifdef DEBUG_TAGGED
-#include "trace_helpers.h"
-#endif
-
 /* This takes both literals and modifiers, e.g.,
  * printk("hello\n");
  * printk("%d\n", ret);
@@ -197,15 +192,37 @@ struct debug_capture_msg {
  * - cannot use more than 3 format specifiers in the format string
  *   because BPF helpers take a maximum of 5 arguments
  */
+#ifdef DEBUG
 # define printk(fmt, ...)					\
 		({						\
 			const char ____fmt[] = fmt;		\
 			trace_printk(____fmt, sizeof(____fmt),	\
 				     ##__VA_ARGS__);		\
 		})
+#else
+# define printk(fmt, ...)					\
+		do { } while (0)
+#endif
 
-static __always_inline void cilium_dbg3(const struct __ctx_buff *ctx, __u8 type,
-					__u32 arg1, __u32 arg2, __u32 arg3)
+/* Reports whether a debug message should be emitted for the packet being
+ * handled. A datapath built with DEBUG traces every packet. With debug_tagged
+ * set, only packets carrying a trace id are traced, whether or not DEBUG was
+ * compiled in.
+ */
+static __always_inline bool cilium_dbg_enabled(void)
+{
+	if (CONFIG(debug_tagged))
+		return load_ip_trace_id() != 0;
+
+#ifdef DEBUG
+	return true;
+#else
+	return false;
+#endif
+}
+
+static __always_inline void __cilium_dbg3(const struct __ctx_buff *ctx, __u8 type,
+					  __u32 arg1, __u32 arg2, __u32 arg3)
 {
 	struct debug_msg msg = {
 		__notify_common_hdr(CILIUM_NOTIFY_DBG_MSG, type),
@@ -213,13 +230,18 @@ static __always_inline void cilium_dbg3(const struct __ctx_buff *ctx, __u8 type,
 		.arg2	= arg2,
 		.arg3	= arg3,
 	};
-#ifdef DEBUG_TAGGED
-	if (!load_ip_trace_id())
-		return;
-#endif
+
 	dbg_extension_hook(ctx, msg);
 	ctx_event_output(ctx, &cilium_events, BPF_F_CURRENT_CPU,
 			 &msg, sizeof(msg));
+}
+
+static __always_inline void cilium_dbg3(const struct __ctx_buff *ctx, __u8 type,
+					__u32 arg1, __u32 arg2, __u32 arg3)
+{
+	if (!cilium_dbg_enabled())
+		return;
+	__cilium_dbg3(ctx, type, arg1, arg2, arg3);
 }
 
 static __always_inline void
@@ -228,8 +250,8 @@ cilium_dbg(const struct __ctx_buff *ctx, __u8 type, __u32 arg1, __u32 arg2)
 	cilium_dbg3(ctx, type, arg1, arg2, 0);
 }
 
-static __always_inline void cilium_dbg_capture2(const struct __ctx_buff *ctx, __u8 type,
-						__u32 arg1, __u32 arg2)
+static __always_inline void __cilium_dbg_capture2(const struct __ctx_buff *ctx, __u8 type,
+						  __u32 arg1, __u32 arg2)
 {
 	__u64 ctx_len = ctx_full_len(ctx);
 	__u64 cap_len = min_t(__u64, TRACE_PAYLOAD_LEN, ctx_len);
@@ -239,14 +261,19 @@ static __always_inline void cilium_dbg_capture2(const struct __ctx_buff *ctx, __
 		.arg1	= arg1,
 		.arg2	= arg2,
 	};
-#ifdef DEBUG_TAGGED
-	if (!load_ip_trace_id())
-		return;
-#endif
+
 	dbg_capture_extension_hook(ctx, msg);
 	ctx_event_output(ctx, &cilium_events,
 			 (cap_len << 32) | BPF_F_CURRENT_CPU,
 			 &msg, sizeof(msg));
+}
+
+static __always_inline void cilium_dbg_capture2(const struct __ctx_buff *ctx, __u8 type,
+						__u32 arg1, __u32 arg2)
+{
+	if (!cilium_dbg_enabled())
+		return;
+	__cilium_dbg_capture2(ctx, type, arg1, arg2);
 }
 
 static __always_inline void cilium_dbg_capture(const struct __ctx_buff *ctx, __u8 type,
@@ -254,34 +281,3 @@ static __always_inline void cilium_dbg_capture(const struct __ctx_buff *ctx, __u
 {
 	cilium_dbg_capture2(ctx, type, arg1, 0);
 }
-#else
-# define printk(fmt, ...)					\
-		do { } while (0)
-
-static __always_inline
-void cilium_dbg(const struct __ctx_buff *ctx __maybe_unused, __u8 type __maybe_unused,
-		__u32 arg1 __maybe_unused, __u32 arg2 __maybe_unused)
-{
-}
-
-static __always_inline
-void cilium_dbg3(const struct __ctx_buff *ctx __maybe_unused,
-		 __u8 type __maybe_unused, __u32 arg1 __maybe_unused,
-		 __u32 arg2 __maybe_unused, __u32 arg3 __maybe_unused)
-{
-}
-
-static __always_inline
-void cilium_dbg_capture(const struct __ctx_buff *ctx __maybe_unused,
-			__u8 type __maybe_unused, __u32 arg1 __maybe_unused)
-{
-}
-
-static __always_inline
-void cilium_dbg_capture2(const struct __ctx_buff *ctx __maybe_unused,
-			 __u8 type __maybe_unused, __u32 arg1 __maybe_unused,
-			 __u32 arg2 __maybe_unused)
-{
-}
-
-#endif

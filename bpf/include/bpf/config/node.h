@@ -68,6 +68,8 @@ NODE_CONFIG(bool, enable_conntrack_accounting, "Enable per flow (conntrack) stat
 
 NODE_CONFIG(bool, debug_lb, "Enable debugging trace statements for load balancer")
 
+NODE_CONFIG(bool, debug_tagged, "Enable debugging trace statements for tagged packets")
+
 NODE_CONFIG(__u8, lb_default_alg, "Default load-balancer backend selection algorithm")
 NODE_CONFIG(bool, lb_selection_per_service,
 	    "Enable per-service load-balancer backend selection algorithm")
